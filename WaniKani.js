@@ -19,23 +19,28 @@ function WaniKani(apiKey) {
 	}
 
 	this.getRecentUnlocks = function(cb, limit){
-		this.sendRequest("recent-unlocks", cb);
+		var arguments = (limit != null) ? "/"+limit : "";
+		this.sendRequest("recent-unlocks"+arguments, cb);
 	}
 
 	this.getCriticalItems = function(cb, percentage){
-		this.sendRequest("critical-items", cb);
+		var arguments = (percentage != null) ? "/"+percentage : "";
+		this.sendRequest("critical-items"+arguments, cb);
 	}
 
 	this.getRadicalsList = function(cb, levels){
-		this.sendRequest("radicals", cb);
+		var arguments = (levels != null) ? "/"+levels : "";
+		this.sendRequest("radicals"+arguments, cb);
 	}
 
 	this.getKanjiList = function(cb, levels){
-		this.sendRequest("kanji", cb);
+		var arguments = (levels != null) ? "/"+levels : "";
+		this.sendRequest("kanji"+arguments, cb);
 	}
 
 	this.getVocabularyList = function(cb, levels){
-		this.sendRequest("vocabulary", cb);
+		var arguments = (levels != null) ? "/"+levels : "";
+		this.sendRequest("vocabulary"+arguments, cb);
 	}
 
 	this.sendRequest = function(path,cb){

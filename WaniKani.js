@@ -4,7 +4,7 @@
 function WaniKani(apiKey) {
 
 	this.apiKey = apiKey;
-	this.apiString = "http://www.wanikani.com/api/v1.1/user/"+apiKey+"/";
+	this.apiString = "http://www.wanikani.com/api/v1.2/user/"+apiKey+"/";
 
 	this.getUserInformation = function(cb){
 		this.sendRequest("user-information", cb);
@@ -41,6 +41,7 @@ function WaniKani(apiKey) {
 	this.getVocabularyList = function(cb, levels){
 		var arguments = (levels != null) ? "/"+levels : "";
 		this.sendRequest("vocabulary"+arguments, cb);
+
 	}
 
 	this.sendRequest = function(path,cb){
@@ -50,14 +51,25 @@ function WaniKani(apiKey) {
 	var resscript;
 	var resultCallback;
 	function sendRequest(apiString, path, cb){
-   		resscript = document.createElement("script");
-   		resscript.src = apiString + path + "?callback=onWaniKaniResult";
-   		document.body.appendChild(resscript);
-   		resultCallback = cb;
+		if ((new Date().getTime()-localStorage[path+"_cachetime"]) < 1200000){
+			console.log("Loading "+path+" from cache");
+			cb(null, JSON.parse(localStorage[path+"_data"]));
+		} else {
+   			resscript = document.createElement("script");
+   			resscript.src = apiString + path + "?callback=onWaniKaniResult";
+   			document.body.appendChild(resscript);
+   			resultCallback = cb;
+   			currentPath = path;
+   		}
 	}
 
 	function onWaniKaniResult(data){
+		if (localStorage){
+			localStorage[currentPath+"_data"] = JSON.stringify(data);
+			localStorage[currentPath+"_cachetime"] = new Date().getTime();
+		}
 		console.log("Response Recieved");
 		document.body.removeChild(resscript);
 		resultCallback(null, data);
+
 	}
